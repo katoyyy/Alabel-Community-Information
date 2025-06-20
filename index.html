@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Alabel Info Hub</title>
+  <style>
+    * { box-sizing: border-box; margin:0; padding:0 }
+
+    body {
+      font-family:'Segoe UI',sans-serif;
+      background:#121212;
+      color:#f5f5f5;
+    }
+
+    .navbar {
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      background:#1e1e1e;
+      padding:20px;
+      position:sticky;
+      top:0;
+      z-index:10;
+    }
+
+    .cta-button {
+      background:#f39c12;
+      color:#fff;
+      border:none;
+      padding:10px 20px;
+      border-radius:6px;
+      cursor:pointer;
+      transition:background .2s;
+    }
+    .cta-button:hover { background:#e67e22; }
+
+    .hero {
+      background: url('https://scontent.fcgy1-3.fna.fbcdn.net/v/t39.30808-6/491999187_1222735693193536_3089354122620462031_n.jpg?stp=cp6_dst-jpg_tt6&_nc_cat=107&ccb=1-7&_nc_sid=833d8c&_nc_ohc=qHWwQq0nIX8Q7kNvwEEHkY4&_nc_oc=Adlrr8-424cFhCe4-DofebkWCqD769i4fYuriLWWAMwxziYYPVMi50Sk2CC8F6wL6hElzL1a05rzn0kDnRSjkI1l&_nc_zt=23&_nc_ht=scontent.fcgy1-3.fna&_nc_gid=lZH8ObkTsmXcAfX956htfQ&oh=00_AfPbeajnBXKx-qZQaC1w4aMIzjXdyvb3iomEI1_2oWvobw&oe=685B5D0C') center/cover no-repeat;
+      position: relative;
+      height: 60vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+    }
+
+    .hero::before {
+      content:''; position:absolute; inset:0;
+      background:rgba(0,0,0,0.5);
+    }
+
+    .hero-content {
+      position:relative;
+      z-index:1;
+      color:white;
+    }
+    .hero-content h1 {
+      font-size:2.5rem;
+      margin-bottom:0.5rem;
+    }
+    .hero-content p {
+      font-size:1.1rem;
+      margin-bottom:1rem;
+    }
+
+    .content { padding:40px; }
+    .template-boxes {
+      display:flex;
+      gap:20px;
+      flex-wrap:wrap;
+      justify-content:center;
+    }
+    .template-card {
+      background:#1e1e1e;
+      padding:20px;
+      border-radius:10px;
+      flex:1;
+      max-width:300px;
+      position:relative;
+    }
+    .template-card h3 {
+      color:#f39c12;
+      margin-bottom:8px;
+    }
+    .template-card p {
+      margin-bottom:12px;
+      font-size:0.95rem;
+    }
+    .announcement-card, .complaint-card, .report-card {
+      background:#2c2c2c;
+      padding:15px;
+      border-radius:8px;
+      margin-bottom:12px;
+    }
+    .announcement-title {
+      display:flex;
+      justify-content:space-between;
+      cursor:pointer;
+    }
+    .announcement-detail {
+      display:none;
+      margin-top:8px;
+      font-size:0.9rem;
+      color:#ccc;
+    }
+  </style>
+</head>
+<body>
+
+  <header class="navbar">
+    <div><strong>🌐 Alabel Info Hub</strong></div>
+    <button id="subscribeBtn" class="cta-button">Subscribe</button>
+  </header>
+
+  <section class="hero">
+    <div class="hero-content">
+      <h1>Welcome to Alabel Info Hub</h1>
+      <p>Your centralized source for announcements, complaints, reports, and more.</p>
+      <button id="heroSubscribe" class="cta-button">🔔 Subscribe Now</button>
+    </div>
+  </section>
+
+  <main class="content">
+    <div id="announcementsBox" class="template-boxes">
+      <div class="template-card" style="max-width:600px;flex:1.5;">
+        <h3>📌 Community Announcements</h3>
+        <div id="announcementsList"></div>
+      </div>
+    </div>
+
+    <div class="template-boxes">
+      <div class="template-card">
+        <h3>📣 Community Complaints</h3>
+        <div id="complaintBox"></div>
+        <textarea id="complaintInput" placeholder="Write your complaint..." style="width:100%;margin-top:10px;padding:8px;border-radius:6px;border:none;background:#2c2c2c;color:#fff;"></textarea>
+        <button id="submitComplaint" class="cta-button">Submit</button>
+      </div>
+      <div class="template-card">
+        <h3>🧹 Cleanliness Reports</h3>
+        <div id="reportsBox"></div>
+      </div>
+      <div class="template-card">
+        <h3>💼 Job Listings</h3>
+        <div id="jobsBox"></div>
+      </div>
+    </div>
+  </main>
+
+  <script>
+    const announcements = [
+      { title: 'Heavy Rain Alert', date: 'June 20, 2025', message: 'Heavy rainfall expected throughout the weekend. Avoid low-lying areas.' },
+      { title: 'Flood Warning', date: 'June 21, 2025', message: 'Water levels rising in riverbanks. Stay alert and follow evacuation protocols.' }
+    ];
+
+    const complaints = JSON.parse(localStorage.getItem('complaints')) || [];
+    const reports = [{ text: 'Barangay clean-up collected 20+ bags of trash on June 15.' }];
+    const jobs = [{ text: 'Admin Assistant at Municipal Hall. Apply by June 25.' }];
+
+    function renderAnnouncements() {
+      const list = document.getElementById('announcementsList');
+      list.innerHTML = '';
+      announcements.forEach((a, i) => {
+        const div = document.createElement('div');
+        div.className = 'announcement-card';
+        div.innerHTML = `
+          <div class="announcement-title">
+            <span><strong>${a.title}</strong> – ${a.date}</span>
+            <button class="cta-button" data-index="${i}">View Details</button>
+          </div>
+          <div class="announcement-detail">${a.message}</div>`;
+        list.appendChild(div);
+      });
+      document.querySelectorAll('.announcement-title button').forEach(btn => {
+        btn.onclick = () => {
+          const detail = btn.parentElement.nextElementSibling;
+          detail.style.display = (detail.style.display === 'block' ? 'none' : 'block');
+        };
+      });
+    }
+
+    function renderComplaints() {
+      const box = document.getElementById('complaintBox');
+      box.innerHTML = '';
+      complaints.forEach((c, index) => {
+        const div = document.createElement('div');
+        div.className = 'complaint-card';
+        div.innerHTML = `<p>${c}</p>`;
+
+        const delBtn = document.createElement('button');
+        delBtn.textContent = '🗑 Remove';
+        delBtn.className = 'cta-button';
+        delBtn.style = 'margin-top:6px;font-size:0.8rem;';
+        delBtn.onclick = () => removeComplaint(index);
+        div.appendChild(delBtn);
+
+        box.appendChild(div);
+      });
+      localStorage.setItem('complaints', JSON.stringify(complaints));
+    }
+
+    function removeComplaint(index) {
+      complaints.splice(index, 1);
+      renderComplaints();
+    }
+
+    function renderReports() {
+      const box = document.getElementById('reportsBox');
+      box.innerHTML = '';
+      reports.forEach(r => {
+        const div = document.createElement('div');
+        div.className = 'report-card';
+        div.innerHTML = `<p>${r.text}</p>`;
+        box.appendChild(div);
+      });
+    }
+
+    function renderJobs() {
+      const box = document.getElementById('jobsBox');
+      box.innerHTML = '';
+      jobs.forEach(j => {
+        const div = document.createElement('div');
+        div.className = 'report-card';
+        div.innerHTML = `<p>${j.text}</p>`;
+        box.appendChild(div);
+      });
+    }
+
+    const subBtn = document.getElementById('subscribeBtn');
+    const heroBtn = document.getElementById('heroSubscribe');
+    function toggleSubscribe() {
+      const subscribed = localStorage.getItem('subscribed') === 'yes';
+      if (!subscribed) {
+        localStorage.setItem('subscribed', 'yes');
+        alert('Salamat sa pag-subscribe!');
+      } else {
+        localStorage.removeItem('subscribed');
+        alert('Na-unsubscribe ka na.');
+      }
+      subBtn.textContent = subscribed ? 'Subscribe' : 'Unsubscribe';
+    }
+    subBtn.onclick = toggleSubscribe;
+    heroBtn.onclick = toggleSubscribe;
+    if (localStorage.getItem('subscribed') === 'yes') subBtn.textContent = 'Unsubscribe';
+
+    document.getElementById('submitComplaint').onclick = () => {
+      const text = document.getElementById('complaintInput').value.trim();
+      if (text) {
+        complaints.push(text);
+        document.getElementById('complaintInput').value = '';
+        renderComplaints();
+      }
+    };
+
+    renderAnnouncements();
+    renderComplaints();
+    renderReports();
+    renderJobs();
+
+    setTimeout(() => {
+      announcements.push({ title: 'New Event Posted!', date: (new Date()).toLocaleDateString(), message: 'Don’t miss our upcoming barangay fiesta on July 1!' });
+      renderAnnouncements();
+      if (localStorage.getItem('subscribed') === 'yes') {
+        alert('🔔 New Announcement: New Event Posted!');
+      }
+    }, 10000);
+  </script>
+
+</body>
+</html>
