@@ -149,8 +149,8 @@
 
   <script>
     const announcements = [
-      { title: 'Heavy Rain Alert. No Classes', date: 'June 21, 2025', message: 'Heavy rainfall expected throughout the weekend. Avoid low-lying areas and also mag dala lagi ng payong kasi maulan ang panahon.' },
-      { title: 'Flood Warning', date: 'June 21, 2025', message: 'Water levels rising in riverbanks. Stay alert and follow evacuation protocols.' }
+      { title: 'Heavy Rain Alert. No Classes', date: 'June 21, 2025', message: 'Report kabahin sa damyos sa milabayng nasinati nga kusog nga pag-ulan sa Munisipyo sa Alabel pinaagi sa pagpahigayon og Rapid Damage Assessment and Needs Analysis (RDANA), Hunyo 19, 2025, sumala sa Alabel Municipal Disaster Risk Reduction and Management Office (MDRRMO). (AIO).' },
+      { title: 'Malakas na Ulan. Mag Ingat', date: 'June 21, 2025', message: Stay alert and follow evacuation protocols.' }
     ];
 
     const complaints = JSON.parse(localStorage.getItem('complaints')) || [];
@@ -257,13 +257,6 @@
     renderReports();
     renderJobs();
 
-    setTimeout(() => {
-      announcements.push({ title: 'New Event Posted!', date: (new Date()).toLocaleDateString(), message: 'Don’t miss our upcoming barangay fiesta on July 1!' });
-      renderAnnouncements();
-      if (localStorage.getItem('subscribed') === 'yes') {
-        alert('🔔 New Announcement: New Event Posted!');
-      }
-    }, 10000);
   </script>
 
 </body>
